@@ -30,24 +30,22 @@ public class SpringbatchApplication {
     private static void prepareData(final int amount) {
         final int actualYear = new GregorianCalendar().get(Calendar.YEAR);
         final Collection<Customer> customers = new LinkedList<>();
-        for (int i = 0; i < amount; i++) {
+        for (int i = 1; i <= amount; i++) {
             final Calendar birthday = new GregorianCalendar();
             birthday.set(Calendar.YEAR, random(actualYear - 100, actualYear));
             birthday.set(Calendar.DAY_OF_YEAR, random(1, birthday.getActualMaximum(Calendar.DAY_OF_YEAR)));
-
             final Customer customer = new Customer();
-            customer.setId(i + 1);
-            customer.setName(UUID.randomUUID().toString().replaceAll("[^a-z]]", ""));
+            customer.setId(i);
+            customer.setName(UUID.randomUUID().toString().replaceAll("[^a-z]", ""));
             customer.setBirthday(birthday);
             customer.setTransactions(random(0, 100));
             customers.add(customer);
         }
-
         try (final XMLEncoder encoder = new XMLEncoder(new FileOutputStream(CustomerReportJobConfig.XML_FILE))) {
             encoder.writeObject(customers);
         } catch (final FileNotFoundException e) {
             log.error(e.getMessage(), e);
-            System.exit(1);
+            System.exit(-1);
         }
     }
 
